@@ -8,12 +8,8 @@ function App() {
   return (
     <>
       <section id="center">
-        
           <h1>Get started</h1>
-          
-       
-        
-      </section>
+        </section>
 
      
     </>
