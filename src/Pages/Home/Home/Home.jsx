@@ -2,6 +2,7 @@ import React from 'react';
 import Hero from '../../../Components/Hero/Hero';
 import About from '../../../Components/About/About';
 import Categories from '../../../Components/Categories/Categories';
+import PopularFoods from '../../../Components/PopularFoods/PopularFoods';
 
 const Home = () => {
     return (
@@ -9,6 +10,7 @@ const Home = () => {
             <Hero></Hero>
             <About></About>
             <Categories></Categories>
+            <PopularFoods></PopularFoods>
         </div>
     );
 };
