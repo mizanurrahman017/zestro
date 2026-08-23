@@ -4,16 +4,32 @@ import {
   FaUtensils,
   FaShoppingCart,
   FaBars,
+  FaUserCircle,
+  FaTachometerAlt,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
+import { useAuth } from "../../../Hooks/useAuth";
+
 const NavBar = () => {
+  const { user, logoutUser } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-[#F7F5EF]/95 backdrop-blur-md border-b border-[#D8D5CC] shadow-sm">
 
       <div className="navbar max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
 
-        {/* Logo */}
+        {/* ================= LOGO ================= */}
         <div className="navbar-start">
+
           <Link
             to="/"
             className="flex items-center gap-3 text-[#252525] hover:text-[#B8A77A] transition-all duration-300"
@@ -32,10 +48,13 @@ const NavBar = () => {
               </p>
             </div>
           </Link>
+
         </div>
 
-        {/* Desktop Menu */}
+
+        {/* ================= DESKTOP MENU ================= */}
         <div className="navbar-center hidden lg:flex">
+
           <ul className="flex items-center gap-2">
 
             <li>
@@ -75,12 +94,15 @@ const NavBar = () => {
             </li>
 
           </ul>
+
         </div>
 
-        {/* Right Side */}
+
+        {/* ================= RIGHT SIDE ================= */}
         <div className="navbar-end gap-2">
 
-          {/* Cart */}
+
+          {/* CART */}
           <Link
             to="/cart"
             className="relative w-11 h-11 rounded-full flex items-center justify-center text-[#252525] hover:bg-[#E7E5DF] hover:text-[#B8A77A] transition-all duration-300"
@@ -92,15 +114,121 @@ const NavBar = () => {
             </span>
           </Link>
 
-          {/* Login */}
-          <Link
-            to="/login"
-            className="hidden sm:flex items-center justify-center px-6 py-2.5 rounded-full bg-[#252525] text-[#F7F5EF] text-sm font-medium hover:bg-[#B8A77A] hover:text-white transition-all duration-300"
-          >
-            Login
-          </Link>
 
-          {/* Mobile Menu */}
+          {/* ================= LOGGED IN PROFILE ================= */}
+          {user ? (
+
+            <div className="dropdown dropdown-end hidden sm:block">
+
+              <button
+                tabIndex={0}
+                className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-[#E7E5DF] transition-all duration-300"
+              >
+
+                <FaUserCircle className="text-3xl text-[#252525]" />
+
+                <div className="hidden md:block text-left">
+
+                  <p className="text-sm font-semibold text-[#252525] max-w-[130px] truncate">
+                    {user.email?.split("@")[0]}
+                  </p>
+
+                  <p className="text-[10px] text-[#8C877C]">
+                    Account
+                  </p>
+
+                </div>
+
+              </button>
+
+
+              {/* Profile Dropdown */}
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content bg-[#F7F5EF] border border-[#D8D5CC] rounded-2xl z-50 mt-4 w-64 p-3 shadow-xl"
+              >
+
+                {/* User Info */}
+                <li className="mb-2 pointer-events-none">
+
+                  <div className="flex items-center gap-3 px-3 py-3 bg-[#E7E5DF] rounded-xl">
+
+                    <FaUserCircle className="text-3xl text-[#252525]" />
+
+                    <div className="min-w-0">
+
+                      <p className="font-semibold text-[#252525] truncate">
+                        {user.email?.split("@")[0]}
+                      </p>
+
+                      <p className="text-xs text-[#6F6B62] truncate">
+                        {user.email}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </li>
+
+
+                {/* Dashboard */}
+                <li>
+                  <Link
+                    to="/admin/dashboard"
+                    className="text-[#3A3935] hover:bg-[#E7E5DF]"
+                  >
+                    <FaTachometerAlt />
+                    Dashboard
+                  </Link>
+                </li>
+
+
+                {/* Profile */}
+                <li>
+                  <Link
+                    to="/profile"
+                    className="text-[#3A3935] hover:bg-[#E7E5DF]"
+                  >
+                    <FaUserCircle />
+                    Profile
+                  </Link>
+                </li>
+
+
+                {/* Divider */}
+                <div className="border-t border-[#D8D5CC] my-2"></div>
+
+
+                {/* Logout */}
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="text-red-500 hover:bg-red-50"
+                  >
+                    <FaSignOutAlt />
+                    Logout
+                  </button>
+                </li>
+
+              </ul>
+
+            </div>
+
+          ) : (
+
+            /* ================= LOGIN ================= */
+            <Link
+              to="/login"
+              className="hidden sm:flex items-center justify-center px-6 py-2.5 rounded-full bg-[#252525] text-[#F7F5EF] text-sm font-medium hover:bg-[#B8A77A] hover:text-white transition-all duration-300"
+            >
+              Login
+            </Link>
+
+          )}
+
+
+          {/* ================= MOBILE MENU ================= */}
           <div className="dropdown dropdown-end lg:hidden">
 
             <button
@@ -110,9 +238,10 @@ const NavBar = () => {
               <FaBars className="text-xl" />
             </button>
 
+
             <ul
               tabIndex={0}
-              className="menu dropdown-content bg-[#F7F5EF] border border-[#D8D5CC] rounded-2xl z-50 mt-4 w-56 p-3 shadow-xl"
+              className="menu dropdown-content bg-[#F7F5EF] border border-[#D8D5CC] rounded-2xl z-50 mt-4 w-64 p-3 shadow-xl"
             >
 
               <li>
@@ -151,21 +280,66 @@ const NavBar = () => {
                 </Link>
               </li>
 
-              <li className="sm:hidden mt-2">
-                <Link
-                  to="/login"
-                  className="bg-[#252525] text-[#F7F5EF] hover:bg-[#B8A77A]"
-                >
-                  Login
-                </Link>
-              </li>
+
+              {/* Mobile Logged In */}
+              {user ? (
+                <>
+                  <div className="border-t border-[#D8D5CC] my-2"></div>
+
+                  <li>
+                    <Link
+                      to="/admin/dashboard"
+                      className="text-[#3A3935] hover:bg-[#E7E5DF]"
+                    >
+                      <FaTachometerAlt />
+                      Dashboard
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      to="/profile"
+                      className="text-[#3A3935] hover:bg-[#E7E5DF]"
+                    >
+                      <FaUserCircle />
+                      Profile
+                    </Link>
+                  </li>
+
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="text-red-500 hover:bg-red-50"
+                    >
+                      <FaSignOutAlt />
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+
+                /* Mobile Login */
+                <li className="sm:hidden mt-2">
+
+                  <Link
+                    to="/login"
+                    className="bg-[#252525] text-[#F7F5EF] hover:bg-[#B8A77A]"
+                  >
+                    Login
+                  </Link>
+
+                </li>
+
+              )}
 
             </ul>
+
           </div>
 
         </div>
 
       </div>
+
     </nav>
   );
 };

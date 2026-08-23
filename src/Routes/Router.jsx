@@ -23,6 +23,9 @@ import QRCodeManager from "../Pages/Admin/QR/QRCodeManager";
 // Kitchen
 import KitchenDashboard from "../Pages/Admin/Kitchen/KitchenDashboard/KitchenDashboard";
 
+// Private Route
+import PrivateRoute from "./PrivateRoute";
+
 
 export const router = createBrowserRouter([
   {
@@ -31,13 +34,18 @@ export const router = createBrowserRouter([
 
     children: [
 
+      // =========================
       // Home
+      // =========================
       {
         index: true,
         Component: Home,
       },
 
-      // Auth
+
+      // =========================
+      // Authentication
+      // =========================
       {
         path: "login",
         Component: Login,
@@ -48,7 +56,10 @@ export const router = createBrowserRouter([
         Component: Register,
       },
 
+
+      // =========================
       // Customer
+      // =========================
       {
         path: "menu/:restaurantId/:tableId",
         Component: Menu,
@@ -64,32 +75,63 @@ export const router = createBrowserRouter([
         Component: OrderTracking,
       },
 
+
+      // =========================
       // Admin
+      // Only OWNER can access
+      // =========================
+
       {
         path: "admin/dashboard",
-        Component: AdminDashboard,
+        element: (
+          <PrivateRoute allowedRole="owner">
+            <AdminDashboard />
+          </PrivateRoute>
+        ),
       },
 
       {
         path: "admin/foods",
-        Component: ManageFoods,
+        element: (
+          <PrivateRoute allowedRole="owner">
+            <ManageFoods />
+          </PrivateRoute>
+        ),
       },
 
       {
         path: "admin/tables",
-        Component: ManageTables,
+        element: (
+          <PrivateRoute allowedRole="owner">
+            <ManageTables />
+          </PrivateRoute>
+        ),
       },
 
       {
         path: "admin/qr-codes",
-        Component: QRCodeManager,
+        element: (
+          <PrivateRoute allowedRole="owner">
+            <QRCodeManager />
+          </PrivateRoute>
+        ),
       },
 
+
+      // =========================
       // Kitchen
+      // Only KITCHEN can access
+      // =========================
+
       {
         path: "kitchen",
-        Component: KitchenDashboard,
+        element: (
+          <PrivateRoute allowedRole="kitchen">
+            <KitchenDashboard />
+          </PrivateRoute>
+        ),
       },
+
     ],
   },
 ]);
