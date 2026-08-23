@@ -29,13 +29,17 @@ const NavBar = () => {
 
         {/* ================= LOGO ================= */}
         <div className="navbar-start">
-
           <Link
             to="/"
             className="flex items-center gap-3 text-[#252525] hover:text-[#B8A77A] transition-all duration-300"
           >
-            <div className="w-10 h-10 rounded-full bg-[#252525] text-[#F7F5EF] flex items-center justify-center">
-              <FaUtensils className="text-lg" />
+            {/* Logo Image */}
+            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+              <img
+                src="/public/zestro.jpg"
+                alt="ZESTRO Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <div>
@@ -48,7 +52,6 @@ const NavBar = () => {
               </p>
             </div>
           </Link>
-
         </div>
 
 
