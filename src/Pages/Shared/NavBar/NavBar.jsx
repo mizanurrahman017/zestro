@@ -71,7 +71,7 @@ const NavBar = () => {
 
             <li>
               <Link
-                to="/menu"
+                to="/menu/vQ5eOlXzEZK0WaruROok"
                 className="px-5 py-2 text-sm font-medium text-[#3A3935] rounded-full hover:bg-[#E7E5DF] hover:text-[#252525] transition-all duration-300"
               >
                 Menu
