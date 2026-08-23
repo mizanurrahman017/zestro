@@ -64,6 +64,10 @@ export const router = createBrowserRouter([
         path: "menu/:restaurantId/:tableId",
         Component: Menu,
       },
+      {
+       path:"menu",
+       Component:Menu,
+      },
 
       {
         path: "cart",
