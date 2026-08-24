@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     collection,
     getDocs,
@@ -6,21 +6,47 @@ import {
     where,
 } from "firebase/firestore";
 
-import { FaSearch, FaStar, FaPlus, FaShoppingCart } from "react-icons/fa";
+import {
+    FaSearch,
+    FaStar,
+    FaPlus,
+    FaShoppingCart,
+} from "react-icons/fa";
+
 import { Link, useParams } from "react-router";
 
 import { db } from "../../../Firebase/Firebase.init";
+import CartContext from "../../../Contexts/CartContext/CartContext";
 
 const Menu = () => {
 
     const { restaurantId, tableId } = useParams();
 
+    // ==============================
+    // CART CONTEXT
+    // ==============================
+
+    const { addToCart, cartCount } = useContext(CartContext);
+
+
+    // ==============================
+    // STATES
+    // ==============================
+
     const [activeCategory, setActiveCategory] = useState("All");
     const [search, setSearch] = useState("");
 
     const [foods, setFoods] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const [addedFoodId, setAddedFoodId] = useState(null);
+
+
+    // ==============================
+    // CATEGORIES
+    // ==============================
 
     const categories = [
         "All",
@@ -32,9 +58,10 @@ const Menu = () => {
         "Desserts",
     ];
 
-    // ==========================================
+
+    // ==============================
     // LOAD FOODS FROM FIREBASE
-    // ==========================================
+    // ==============================
 
     useEffect(() => {
 
@@ -45,23 +72,32 @@ const Menu = () => {
                 setLoading(true);
                 setError("");
 
+                // Restaurant ID না থাকলে
                 if (!restaurantId) {
                     setError("Restaurant ID not found.");
+                    setLoading(false);
                     return;
                 }
 
+
+                // Firebase query
                 const foodsQuery = query(
                     collection(db, "foods"),
                     where("restaurantId", "==", restaurantId),
                     where("available", "==", true)
                 );
 
+
+                // Get foods
                 const foodsSnapshot = await getDocs(foodsQuery);
 
+
+                // Convert Firebase data
                 const foodList = foodsSnapshot.docs.map((food) => ({
                     id: food.id,
                     ...food.data(),
                 }));
+
 
                 setFoods(foodList);
 
@@ -78,14 +114,15 @@ const Menu = () => {
             }
         };
 
+
         loadFoods();
 
     }, [restaurantId]);
 
 
-    // ==========================================
+    // ==============================
     // CATEGORY + SEARCH FILTER
-    // ==========================================
+    // ==============================
 
     const filteredFoods = foods.filter((food) => {
 
@@ -93,18 +130,47 @@ const Menu = () => {
             activeCategory === "All" ||
             food.category === activeCategory;
 
+
         const searchMatch =
             food.name
                 ?.toLowerCase()
                 .includes(search.toLowerCase());
 
+
         return categoryMatch && searchMatch;
     });
 
 
-    // ==========================================
+    // ==============================
+    // ADD TO CART
+    // ==============================
+
+    const handleAddToCart = (food) => {
+
+        // Restaurant ID-ও cart item-এর সাথে রাখছি
+        const cartFood = {
+            ...food,
+            restaurantId: restaurantId,
+            tableId: tableId || null,
+        };
+
+
+        addToCart(cartFood);
+
+
+        // Button feedback
+        setAddedFoodId(food.id);
+
+
+        setTimeout(() => {
+            setAddedFoodId(null);
+        }, 1200);
+    };
+
+
+    // ==============================
     // LOADING
-    // ==========================================
+    // ==============================
 
     if (loading) {
 
@@ -126,9 +192,9 @@ const Menu = () => {
     }
 
 
-    // ==========================================
+    // ==============================
     // MAIN UI
-    // ==========================================
+    // ==============================
 
     return (
 
@@ -149,21 +215,28 @@ const Menu = () => {
                             ZESTRO Restaurant
                         </p>
 
+
                         <h1 className="text-4xl md:text-6xl font-bold mt-4 tracking-tight text-[#252525]">
                             Our Menu
                         </h1>
+
 
                         <p className="text-[#6F6B62] max-w-xl mx-auto mt-5 leading-7">
                             Explore our delicious selection of freshly
                             prepared food and discover your next favorite dish.
                         </p>
 
+
                         {/* Table Information */}
 
                         {tableId && (
+
                             <p className="mt-5 text-sm text-[#9A8654] font-semibold">
+
                                 Table: {tableId}
+
                             </p>
+
                         )}
 
                     </div>
@@ -204,6 +277,7 @@ const Menu = () => {
                 <div className="max-w-xl mx-auto relative">
 
                     <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-[#8C877C]" />
+
 
                     <input
                         type="text"
@@ -253,9 +327,11 @@ const Menu = () => {
                                 font-semibold
                                 transition-all
                                 duration-300
-                                ${activeCategory === category
-                                    ? "bg-[#252525] text-white shadow-md"
-                                    : "bg-white text-[#5F5B53] border border-[#DEDAD0] hover:bg-[#E8E4D9] hover:border-[#CFC9BA]"
+
+                                ${
+                                    activeCategory === category
+                                        ? "bg-[#252525] text-white shadow-md"
+                                        : "bg-white text-[#5F5B53] border border-[#DEDAD0] hover:bg-[#E8E4D9] hover:border-[#CFC9BA]"
                                 }
                             `}
                         >
@@ -284,6 +360,7 @@ const Menu = () => {
 
                         </h2>
 
+
                         <p className="text-sm text-[#8C877C] mt-1">
 
                             {filteredFoods.length} items available
@@ -294,11 +371,14 @@ const Menu = () => {
 
 
 
-                    {/* Cart */}
+                    {/* ==================================
+                        CART BUTTON
+                    ================================== */}
 
                     <Link
                         to="/cart"
                         className="
+                            relative
                             w-11
                             h-11
                             rounded-full
@@ -313,6 +393,34 @@ const Menu = () => {
                     >
 
                         <FaShoppingCart />
+
+
+                        {/* Cart Count */}
+
+                        {cartCount > 0 && (
+
+                            <span
+                                className="
+                                    absolute
+                                    -top-2
+                                    -right-2
+                                    min-w-5
+                                    h-5
+                                    px-1
+                                    rounded-full
+                                    bg-[#9A8654]
+                                    text-white
+                                    text-[10px]
+                                    font-bold
+                                    flex
+                                    items-center
+                                    justify-center
+                                "
+                            >
+                                {cartCount}
+                            </span>
+
+                        )}
 
                     </Link>
 
@@ -442,6 +550,7 @@ const Menu = () => {
 
                                         </div>
 
+
                                         <span className="text-xs text-[#8C877C] ml-1">
 
                                             {food.rating || 5}
@@ -455,6 +564,7 @@ const Menu = () => {
                                     {/* ================= ADD TO CART ================= */}
 
                                     <button
+                                        onClick={() => handleAddToCart(food)}
                                         className="
                                             w-full
                                             mt-5
@@ -473,9 +583,20 @@ const Menu = () => {
                                         "
                                     >
 
-                                        <FaPlus className="text-xs" />
+                                        {addedFoodId === food.id ? (
 
-                                        Add to Cart
+                                            <>
+                                                ✓ Added to Cart
+                                            </>
+
+                                        ) : (
+
+                                            <>
+                                                <FaPlus className="text-xs" />
+                                                Add to Cart
+                                            </>
+
+                                        )}
 
                                     </button>
 
@@ -497,9 +618,11 @@ const Menu = () => {
                             🍽️
                         </div>
 
+
                         <h3 className="text-2xl font-bold text-[#252525]">
                             No food found
                         </h3>
+
 
                         <p className="text-[#8C877C] mt-2">
                             No foods have been added to this restaurant yet.
