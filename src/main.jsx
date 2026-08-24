@@ -9,11 +9,11 @@ import AuthProvider from "./Contexts/AuthContext/AuthProvider.jsx";
 import CartProvider from "./Contexts/CartContext/CartProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <AuthProvider>
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
-    </AuthProvider>
-  </StrictMode>
+    <StrictMode>
+        <AuthProvider>
+            <CartProvider>
+                <RouterProvider router={router} />
+            </CartProvider>
+        </AuthProvider>
+    </StrictMode>
 );

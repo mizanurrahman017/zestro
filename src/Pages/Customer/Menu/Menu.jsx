@@ -1,4 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+    useContext,
+    useEffect,
+    useState,
+} from "react";
+
 import {
     collection,
     getDocs,
@@ -13,40 +18,72 @@ import {
     FaShoppingCart,
 } from "react-icons/fa";
 
-import { Link, useParams } from "react-router";
+import {
+    Link,
+    useParams,
+} from "react-router";
 
 import { db } from "../../../Firebase/Firebase.init";
+
 import CartContext from "../../../Contexts/CartContext/CartContext";
+
 
 const Menu = () => {
 
-    const { restaurantId, tableId } = useParams();
+    const {
+        restaurantId,
+        tableId,
+    } = useParams();
 
-    // ==============================
+
+    // ==========================================
     // CART CONTEXT
-    // ==============================
+    // ==========================================
 
-    const { addToCart, cartCount } = useContext(CartContext);
+    const {
+        addToCart,
+        cartCount,
+    } = useContext(CartContext);
 
 
-    // ==============================
+    // ==========================================
     // STATES
-    // ==============================
+    // ==========================================
 
-    const [activeCategory, setActiveCategory] = useState("All");
-    const [search, setSearch] = useState("");
+    const [
+        activeCategory,
+        setActiveCategory,
+    ] = useState("All");
 
-    const [foods, setFoods] = useState([]);
+    const [
+        search,
+        setSearch,
+    ] = useState("");
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [
+        foods,
+        setFoods,
+    ] = useState([]);
 
-    const [addedFoodId, setAddedFoodId] = useState(null);
+    const [
+        loading,
+        setLoading,
+    ] = useState(true);
+
+    const [
+        error,
+        setError,
+    ] = useState("");
+
+    const [
+        addedFoodId,
+        setAddedFoodId,
+    ] = useState(null);
 
 
-    // ==============================
+    // ==========================================
     // CATEGORIES
-    // ==============================
+    // ==========================================
 
     const categories = [
         "All",
@@ -59,9 +96,9 @@ const Menu = () => {
     ];
 
 
-    // ==============================
-    // LOAD FOODS FROM FIREBASE
-    // ==============================
+    // ==========================================
+    // LOAD FOODS
+    // ==========================================
 
     useEffect(() => {
 
@@ -72,40 +109,63 @@ const Menu = () => {
                 setLoading(true);
                 setError("");
 
-                // Restaurant ID না থাকলে
+
                 if (!restaurantId) {
-                    setError("Restaurant ID not found.");
+
+                    setError(
+                        "Restaurant ID not found."
+                    );
+
                     setLoading(false);
+
                     return;
                 }
 
 
-                // Firebase query
                 const foodsQuery = query(
                     collection(db, "foods"),
-                    where("restaurantId", "==", restaurantId),
-                    where("available", "==", true)
+
+                    where(
+                        "restaurantId",
+                        "==",
+                        restaurantId
+                    ),
+
+                    where(
+                        "available",
+                        "==",
+                        true
+                    )
                 );
 
 
-                // Get foods
-                const foodsSnapshot = await getDocs(foodsQuery);
+                const foodsSnapshot =
+                    await getDocs(
+                        foodsQuery
+                    );
 
 
-                // Convert Firebase data
-                const foodList = foodsSnapshot.docs.map((food) => ({
-                    id: food.id,
-                    ...food.data(),
-                }));
+                const foodList =
+                    foodsSnapshot.docs.map(
+                        (food) => ({
+                            id: food.id,
+                            ...food.data(),
+                        })
+                    );
 
 
                 setFoods(foodList);
 
             } catch (error) {
 
-                console.error("Food loading error:", error);
+                console.error(
+                    "Food loading error:",
+                    error
+                );
 
-                setError("Failed to load foods.");
+                setError(
+                    "Failed to load foods."
+                );
 
             } finally {
 
@@ -120,57 +180,70 @@ const Menu = () => {
     }, [restaurantId]);
 
 
-    // ==============================
-    // CATEGORY + SEARCH FILTER
-    // ==============================
+    // ==========================================
+    // FILTER FOODS
+    // ==========================================
 
-    const filteredFoods = foods.filter((food) => {
+    const filteredFoods =
+        foods.filter((food) => {
 
-        const categoryMatch =
-            activeCategory === "All" ||
-            food.category === activeCategory;
-
-
-        const searchMatch =
-            food.name
-                ?.toLowerCase()
-                .includes(search.toLowerCase());
+            const categoryMatch =
+                activeCategory === "All" ||
+                food.category === activeCategory;
 
 
-        return categoryMatch && searchMatch;
-    });
+            const searchMatch =
+                food.name
+                    ?.toLowerCase()
+                    .includes(
+                        search.toLowerCase()
+                    );
 
 
-    // ==============================
+            return (
+                categoryMatch &&
+                searchMatch
+            );
+        });
+
+
+    // ==========================================
     // ADD TO CART
-    // ==============================
+    // ==========================================
 
     const handleAddToCart = (food) => {
 
-        // Restaurant ID-ও cart item-এর সাথে রাখছি
         const cartFood = {
+
             ...food,
-            restaurantId: restaurantId,
-            tableId: tableId || null,
+
+            restaurantId:
+                restaurantId,
+
+            tableId:
+                tableId || null,
         };
 
 
         addToCart(cartFood);
 
 
-        // Button feedback
-        setAddedFoodId(food.id);
+        setAddedFoodId(
+            food.id
+        );
 
 
         setTimeout(() => {
+
             setAddedFoodId(null);
+
         }, 1200);
     };
 
 
-    // ==============================
+    // ==========================================
     // LOADING
-    // ==============================
+    // ==========================================
 
     if (loading) {
 
@@ -192,9 +265,9 @@ const Menu = () => {
     }
 
 
-    // ==============================
+    // ==========================================
     // MAIN UI
-    // ==============================
+    // ==========================================
 
     return (
 
@@ -227,8 +300,6 @@ const Menu = () => {
                         </p>
 
 
-                        {/* Table Information */}
-
                         {tableId && (
 
                             <p className="mt-5 text-sm text-[#9A8654] font-semibold">
@@ -254,9 +325,7 @@ const Menu = () => {
             <section className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12 py-12 md:py-16">
 
 
-                {/* ==================================
-                    ERROR
-                ================================== */}
+                {/* ERROR */}
 
                 {error && (
 
@@ -270,9 +339,7 @@ const Menu = () => {
 
 
 
-                {/* ==================================
-                    SEARCH
-                ================================== */}
+                {/* SEARCH */}
 
                 <div className="max-w-xl mx-auto relative">
 
@@ -283,7 +350,11 @@ const Menu = () => {
                         type="text"
                         placeholder="Search your favorite food..."
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e) =>
+                            setSearch(
+                                e.target.value
+                            )
+                        }
                         className="
                             w-full
                             bg-white
@@ -307,46 +378,48 @@ const Menu = () => {
 
 
 
-                {/* ==================================
-                    CATEGORIES
-                ================================== */}
+                {/* CATEGORIES */}
 
                 <div className="flex gap-3 overflow-x-auto py-8 scrollbar-hide justify-start md:justify-center">
 
-                    {categories.map((category) => (
+                    {categories.map(
+                        (category) => (
 
-                        <button
-                            key={category}
-                            onClick={() => setActiveCategory(category)}
-                            className={`
-                                whitespace-nowrap
-                                px-5
-                                py-2.5
-                                rounded-full
-                                text-sm
-                                font-semibold
-                                transition-all
-                                duration-300
-
-                                ${
-                                    activeCategory === category
-                                        ? "bg-[#252525] text-white shadow-md"
-                                        : "bg-white text-[#5F5B53] border border-[#DEDAD0] hover:bg-[#E8E4D9] hover:border-[#CFC9BA]"
+                            <button
+                                key={category}
+                                onClick={() =>
+                                    setActiveCategory(
+                                        category
+                                    )
                                 }
-                            `}
-                        >
-                            {category}
-                        </button>
+                                className={`
+                                    whitespace-nowrap
+                                    px-5
+                                    py-2.5
+                                    rounded-full
+                                    text-sm
+                                    font-semibold
+                                    transition-all
+                                    duration-300
 
-                    ))}
+                                    ${
+                                        activeCategory === category
+                                            ? "bg-[#252525] text-white shadow-md"
+                                            : "bg-white text-[#5F5B53] border border-[#DEDAD0] hover:bg-[#E8E4D9] hover:border-[#CFC9BA]"
+                                    }
+                                `}
+                            >
+                                {category}
+                            </button>
+
+                        )
+                    )}
 
                 </div>
 
 
 
-                {/* ==================================
-                    RESULT INFO
-                ================================== */}
+                {/* RESULT INFO */}
 
                 <div className="flex items-center justify-between mb-7">
 
@@ -371,9 +444,7 @@ const Menu = () => {
 
 
 
-                    {/* ==================================
-                        CART BUTTON
-                    ================================== */}
+                    {/* CART */}
 
                     <Link
                         to="/cart"
@@ -394,8 +465,6 @@ const Menu = () => {
 
                         <FaShoppingCart />
 
-
-                        {/* Cart Count */}
 
                         {cartCount > 0 && (
 
@@ -428,189 +497,184 @@ const Menu = () => {
 
 
 
-                {/* ==================================
-                    FOOD GRID
-                ================================== */}
+                {/* FOOD GRID */}
 
                 {filteredFoods.length > 0 ? (
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-                        {filteredFoods.map((food) => (
+                        {filteredFoods.map(
+                            (food) => (
 
-                            <div
-                                key={food.id}
-                                className="
-                                    group
-                                    bg-white
-                                    rounded-[28px]
-                                    overflow-hidden
-                                    border
-                                    border-[#E0DDD4]
-                                    hover:shadow-xl
-                                    hover:-translate-y-1
-                                    transition-all
-                                    duration-300
-                                "
-                            >
-
-
-                                {/* ================= IMAGE ================= */}
-
-                                <div className="relative overflow-hidden">
-
-                                    <img
-                                        src={food.image}
-                                        alt={food.name}
-                                        className="
-                                            w-full
-                                            h-56
-                                            object-cover
-                                            group-hover:scale-105
-                                            transition-transform
-                                            duration-500
-                                        "
-                                    />
+                                <div
+                                    key={food.id}
+                                    className="
+                                        group
+                                        bg-white
+                                        rounded-[28px]
+                                        overflow-hidden
+                                        border
+                                        border-[#E0DDD4]
+                                        hover:shadow-xl
+                                        hover:-translate-y-1
+                                        transition-all
+                                        duration-300
+                                    "
+                                >
 
 
-                                    {/* Price */}
+                                    {/* IMAGE */}
 
-                                    <div
-                                        className="
-                                            absolute
-                                            top-4
-                                            right-4
-                                            bg-[#F7F5EF]/95
-                                            backdrop-blur-sm
-                                            px-4
-                                            py-2
-                                            rounded-full
-                                            shadow-sm
-                                        "
-                                    >
+                                    <div className="relative overflow-hidden">
 
-                                        <span className="font-bold text-[#252525]">
+                                        <img
+                                            src={food.image}
+                                            alt={food.name}
+                                            className="
+                                                w-full
+                                                h-56
+                                                object-cover
+                                                group-hover:scale-105
+                                                transition-transform
+                                                duration-500
+                                            "
+                                        />
 
-                                            ৳{food.price}
 
-                                        </span>
+                                        {/* PRICE */}
+
+                                        <div
+                                            className="
+                                                absolute
+                                                top-4
+                                                right-4
+                                                bg-[#F7F5EF]/95
+                                                backdrop-blur-sm
+                                                px-4
+                                                py-2
+                                                rounded-full
+                                                shadow-sm
+                                            "
+                                        >
+
+                                            <span className="font-bold text-[#252525]">
+
+                                                ৳{food.price}
+
+                                            </span>
+
+                                        </div>
 
                                     </div>
 
-                                </div>
+
+
+                                    {/* CARD CONTENT */}
+
+                                    <div className="p-5">
+
+
+                                        <p className="text-xs uppercase tracking-[0.2em] text-[#9A8654] font-semibold">
+
+                                            {food.category}
+
+                                        </p>
+
+
+                                        <h3 className="text-lg font-bold text-[#252525] mt-2 line-clamp-1">
+
+                                            {food.name}
+
+                                        </h3>
+
+
+                                        <p className="text-sm text-[#8C877C] mt-2 line-clamp-2">
+
+                                            {food.description}
+
+                                        </p>
 
 
 
-                                {/* ================= CARD CONTENT ================= */}
+                                        {/* RATING */}
 
-                                <div className="p-5">
+                                        <div className="flex items-center gap-1 mt-3">
 
+                                            <div className="flex gap-0.5 text-[#B8A77A]">
 
-                                    {/* Category */}
+                                                <FaStar className="text-xs" />
+                                                <FaStar className="text-xs" />
+                                                <FaStar className="text-xs" />
+                                                <FaStar className="text-xs" />
+                                                <FaStar className="text-xs" />
 
-                                    <p className="text-xs uppercase tracking-[0.2em] text-[#9A8654] font-semibold">
-
-                                        {food.category}
-
-                                    </p>
-
-
-
-                                    {/* Food Name */}
-
-                                    <h3 className="text-lg font-bold text-[#252525] mt-2 line-clamp-1">
-
-                                        {food.name}
-
-                                    </h3>
+                                            </div>
 
 
+                                            <span className="text-xs text-[#8C877C] ml-1">
 
-                                    {/* Description */}
+                                                {food.rating || 5}
 
-                                    <p className="text-sm text-[#8C877C] mt-2 line-clamp-2">
-
-                                        {food.description}
-
-                                    </p>
-
-
-
-                                    {/* ================= RATING ================= */}
-
-                                    <div className="flex items-center gap-1 mt-3">
-
-                                        <div className="flex gap-0.5 text-[#B8A77A]">
-
-                                            <FaStar className="text-xs" />
-                                            <FaStar className="text-xs" />
-                                            <FaStar className="text-xs" />
-                                            <FaStar className="text-xs" />
-                                            <FaStar className="text-xs" />
+                                            </span>
 
                                         </div>
 
 
-                                        <span className="text-xs text-[#8C877C] ml-1">
 
-                                            {food.rating || 5}
+                                        {/* ADD TO CART */}
 
-                                        </span>
+                                        <button
+                                            onClick={() =>
+                                                handleAddToCart(
+                                                    food
+                                                )
+                                            }
+                                            className="
+                                                w-full
+                                                mt-5
+                                                flex
+                                                items-center
+                                                justify-center
+                                                gap-2
+                                                bg-[#252525]
+                                                text-white
+                                                py-3
+                                                rounded-xl
+                                                font-semibold
+                                                hover:bg-[#9A8654]
+                                                transition-all
+                                                duration-300
+                                            "
+                                        >
+
+                                            {addedFoodId ===
+                                            food.id ? (
+
+                                                <>
+                                                    ✓ Added to Cart
+                                                </>
+
+                                            ) : (
+
+                                                <>
+                                                    <FaPlus className="text-xs" />
+                                                    Add to Cart
+                                                </>
+
+                                            )}
+
+                                        </button>
 
                                     </div>
 
-
-
-                                    {/* ================= ADD TO CART ================= */}
-
-                                    <button
-                                        onClick={() => handleAddToCart(food)}
-                                        className="
-                                            w-full
-                                            mt-5
-                                            flex
-                                            items-center
-                                            justify-center
-                                            gap-2
-                                            bg-[#252525]
-                                            text-white
-                                            py-3
-                                            rounded-xl
-                                            font-semibold
-                                            hover:bg-[#9A8654]
-                                            transition-all
-                                            duration-300
-                                        "
-                                    >
-
-                                        {addedFoodId === food.id ? (
-
-                                            <>
-                                                ✓ Added to Cart
-                                            </>
-
-                                        ) : (
-
-                                            <>
-                                                <FaPlus className="text-xs" />
-                                                Add to Cart
-                                            </>
-
-                                        )}
-
-                                    </button>
-
                                 </div>
 
-                            </div>
-
-                        ))}
+                            )
+                        )}
 
                     </div>
 
                 ) : (
-
-                    /* ================= NO RESULT ================= */
 
                     <div className="text-center py-20">
 
@@ -637,5 +701,6 @@ const Menu = () => {
         </div>
     );
 };
+
 
 export default Menu;
