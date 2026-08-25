@@ -52,7 +52,7 @@ const Hero = () => {
                         <div className="flex flex-wrap items-center gap-4 mt-8">
 
                             <Link
-                                to="/menu"
+                                to="/menu/vQ5eOlXzEZK0WaruROok"
                                 className="flex items-center gap-3 bg-[#252525] text-white px-7 py-3.5 rounded-full font-semibold hover:bg-[#B8A77A] transition-all duration-300"
                             >
 

@@ -21,6 +21,7 @@ import {
 import {
     Link,
     useParams,
+    useSearchParams,
 } from "react-router";
 
 import { db } from "../../../Firebase/Firebase.init";
@@ -30,10 +31,28 @@ import CartContext from "../../../Contexts/CartContext/CartContext";
 
 const Menu = () => {
 
+    // ==========================================
+    // ROUTE PARAMETER
+    // ==========================================
+
     const {
         restaurantId,
-        tableId,
     } = useParams();
+
+
+    // ==========================================
+    // QUERY PARAMETER
+    // ==========================================
+
+    const [
+        searchParams,
+        setSearchParams,
+    ] = useSearchParams();
+
+
+    // QR থেকে ?table=1 পাওয়া যাবে
+    const tableId =
+        searchParams.get("table");
 
 
     // ==========================================
@@ -217,9 +236,11 @@ const Menu = () => {
 
             ...food,
 
+            // Restaurant ID
             restaurantId:
                 restaurantId,
 
+            // QR table ID
             tableId:
                 tableId || null,
         };
@@ -300,13 +321,23 @@ const Menu = () => {
                         </p>
 
 
+                        {/* ==================================
+                            QR TABLE INFORMATION
+                        ================================== */}
+
                         {tableId && (
 
-                            <p className="mt-5 text-sm text-[#9A8654] font-semibold">
+                            <div className="mt-6 inline-flex items-center gap-2 bg-white px-5 py-2.5 rounded-full border border-[#D8D3C6]">
 
-                                Table: {tableId}
+                                <span className="text-sm text-[#8C877C]">
+                                    Ordering from
+                                </span>
 
-                            </p>
+                                <span className="text-sm text-[#9A8654] font-bold">
+                                    Table {tableId}
+                                </span>
+
+                            </div>
 
                         )}
 

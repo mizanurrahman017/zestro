@@ -64,7 +64,7 @@ const PopularFoods = () => {
 
                     {/* View Menu */}
                     <Link
-                        to="/menu"
+                        to="/menu/vQ5eOlXzEZK0WaruROok"
                         className="inline-flex items-center gap-3 text-[#252525] font-semibold hover:text-[#B8A77A] transition-all duration-300"
                     >
                         View Full Menu
@@ -142,7 +142,7 @@ const PopularFoods = () => {
 
                                     {/* Order Button */}
                                     <Link
-                                        to="/menu"
+                                        to="/menu/vQ5eOlXzEZK0WaruROok"
                                         className="w-11 h-11 rounded-full bg-[#252525] text-white flex items-center justify-center hover:bg-[#B8A77A] transition-all duration-300"
                                     >
                                         <FaShoppingBag className="text-sm" />
@@ -163,7 +163,7 @@ const PopularFoods = () => {
                 <div className="text-center mt-12">
 
                     <Link
-                        to="/menu"
+                        to="/menu/vQ5eOlXzEZK0WaruROok"
                         className="inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-[#252525] text-white font-semibold hover:bg-[#B8A77A] transition-all duration-300"
                     >
                         Explore All Foods
