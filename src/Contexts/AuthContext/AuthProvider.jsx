@@ -10,6 +10,10 @@ import {
 import {
     doc,
     getDoc,
+    collection,
+    query,
+    where,
+    getDocs,
 } from "firebase/firestore";
 
 import AuthContext from "./AuthContext";
@@ -23,44 +27,50 @@ const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
 
-    // =========================
-    // Register
-    // =========================
+    // ==========================================
+    // REGISTER
+    // ==========================================
 
     const registerUser = (email, password) => {
+
         return createUserWithEmailAndPassword(
             auth,
             email,
             password
         );
+
     };
 
 
-    // =========================
-    // Login
-    // =========================
+    // ==========================================
+    // LOGIN
+    // ==========================================
 
     const loginUser = (email, password) => {
+
         return signInWithEmailAndPassword(
             auth,
             email,
             password
         );
+
     };
 
 
-    // =========================
-    // Logout
-    // =========================
+    // ==========================================
+    // LOGOUT
+    // ==========================================
 
     const logoutUser = () => {
+
         return signOut(auth);
+
     };
 
 
-    // =========================
-    // Auth State
-    // =========================
+    // ==========================================
+    // AUTH STATE
+    // ==========================================
 
     useEffect(() => {
 
@@ -70,45 +80,171 @@ const AuthProvider = ({ children }) => {
 
                 setUser(currentUser);
 
-                if (currentUser) {
+                if (!currentUser) {
 
-                    try {
+                    setUserData(null);
+                    setLoading(false);
 
-                        const userRef = doc(
-                            db,
-                            "users",
-                            currentUser.uid
-                        );
+                    return;
+                }
 
-                        const userSnapshot = await getDoc(userRef);
 
-                        if (userSnapshot.exists()) {
+                try {
 
-                            setUserData(userSnapshot.data());
+                    // ==========================================
+                    // GET USER DOCUMENT
+                    // ==========================================
 
-                        } else {
+                    const userRef = doc(
+                        db,
+                        "users",
+                        currentUser.uid
+                    );
 
-                            setUserData(null);
+                    const userSnapshot = await getDoc(
+                        userRef
+                    );
+
+
+                    if (!userSnapshot.exists()) {
+
+                        setUserData(null);
+                        setLoading(false);
+
+                        return;
+                    }
+
+
+                    const firestoreUserData =
+                        userSnapshot.data();
+
+
+                    // ==========================================
+                    // DEFAULT USER DATA
+                    // ==========================================
+
+                    let finalUserData = {
+                        ...firestoreUserData,
+                    };
+
+
+                    // ==========================================
+                    // GET RESTAURANT
+                    // OWNER / KITCHEN
+                    // ==========================================
+
+                    if (
+                        firestoreUserData.role === "owner" ||
+                        firestoreUserData.role === "kitchen"
+                    ) {
+
+                        try {
+
+                            // ----------------------------------
+                            // FIRST: IF restaurantId ALREADY EXISTS
+                            // ----------------------------------
+
+                            if (
+                                firestoreUserData.restaurantId
+                            ) {
+
+                                finalUserData = {
+                                    ...finalUserData,
+                                    restaurantId:
+                                        firestoreUserData.restaurantId,
+                                };
+
+                            } else {
+
+                                // ----------------------------------
+                                // FIND RESTAURANT BY OWNER ID
+                                // ----------------------------------
+
+                                const restaurantQuery =
+                                    query(
+                                        collection(
+                                            db,
+                                            "restaurants"
+                                        ),
+                                        where(
+                                            "ownerId",
+                                            "==",
+                                            currentUser.uid
+                                        )
+                                    );
+
+
+                                const restaurantSnapshot =
+                                    await getDocs(
+                                        restaurantQuery
+                                    );
+
+
+                                if (
+                                    !restaurantSnapshot.empty
+                                ) {
+
+                                    const restaurantDoc =
+                                        restaurantSnapshot.docs[0];
+
+                                    const restaurantData =
+                                        restaurantDoc.data();
+
+
+                                    finalUserData = {
+                                        ...finalUserData,
+
+                                        restaurantId:
+                                            restaurantData.restaurantId,
+
+                                        restaurantName:
+                                            restaurantData.restaurantName,
+
+                                        ownerId:
+                                            restaurantData.ownerId,
+
+                                    };
+
+                                }
+
+                            }
+
+                        } catch (restaurantError) {
+
+                            console.error(
+                                "Restaurant loading error:",
+                                restaurantError
+                            );
 
                         }
 
-                    } catch (error) {
-
-                        console.error(
-                            "Error loading user data:",
-                            error
-                        );
-
-                        setUserData(null);
                     }
 
-                } else {
+
+                    // ==========================================
+                    // SET USER DATA
+                    // ==========================================
+
+                    setUserData(
+                        finalUserData
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Error loading user data:",
+                        error
+                    );
 
                     setUserData(null);
 
+                } finally {
+
+                    setLoading(false);
+
                 }
 
-                setLoading(false);
             }
         );
 
@@ -118,9 +254,9 @@ const AuthProvider = ({ children }) => {
     }, []);
 
 
-    // =========================
-    // Auth Info
-    // =========================
+    // ==========================================
+    // AUTH INFO
+    // ==========================================
 
     const authInfo = {
 
@@ -136,10 +272,13 @@ const AuthProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={authInfo}>
+        <AuthContext.Provider
+            value={authInfo}
+        >
             {children}
         </AuthContext.Provider>
     );
+
 };
 
 

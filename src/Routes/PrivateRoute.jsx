@@ -2,7 +2,11 @@ import React from "react";
 import { Navigate } from "react-router";
 import { useAuth } from "../Hooks/useAuth";
 
-const PrivateRoute = ({ children, allowedRole }) => {
+
+const PrivateRoute = ({
+    children,
+    allowedRole
+}) => {
 
     const {
         user,
@@ -11,13 +15,26 @@ const PrivateRoute = ({ children, allowedRole }) => {
     } = useAuth();
 
 
-    // Firebase user information loading
+    // ==========================================
+    // LOADING
+    // ==========================================
+
     if (loading) {
 
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#F7F5EF]">
+            <div className="
+                min-h-screen
+                flex
+                items-center
+                justify-center
+                bg-[#F7F5EF]
+            ">
 
-                <span className="loading loading-spinner loading-lg"></span>
+                <span className="
+                    loading
+                    loading-spinner
+                    loading-lg
+                "></span>
 
             </div>
         );
@@ -25,7 +42,10 @@ const PrivateRoute = ({ children, allowedRole }) => {
     }
 
 
-    // Not logged in
+    // ==========================================
+    // NOT LOGGED IN
+    // ==========================================
+
     if (!user) {
 
         return (
@@ -38,7 +58,10 @@ const PrivateRoute = ({ children, allowedRole }) => {
     }
 
 
-    // Role check
+    // ==========================================
+    // ROLE CHECK
+    // ==========================================
+
     if (
         allowedRole &&
         userData?.role !== allowedRole
@@ -54,7 +77,13 @@ const PrivateRoute = ({ children, allowedRole }) => {
     }
 
 
+    // ==========================================
+    // ACCESS GRANTED
+    // ==========================================
+
     return children;
+
 };
+
 
 export default PrivateRoute;

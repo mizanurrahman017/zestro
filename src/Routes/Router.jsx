@@ -94,8 +94,7 @@ export const router = createBrowserRouter([
 
 
             // ==================================
-            // CUSTOMER MENU
-            // NO LOGIN REQUIRED
+            // MENU
             // ==================================
 
             {
@@ -115,8 +114,7 @@ export const router = createBrowserRouter([
 
 
             // ==================================
-            // CUSTOMER CART
-            // NO LOGIN REQUIRED
+            // CART
             // ==================================
 
             {
@@ -127,7 +125,6 @@ export const router = createBrowserRouter([
 
             // ==================================
             // ORDER TRACKING
-            // NO LOGIN REQUIRED
             // ==================================
 
             {
@@ -145,97 +142,89 @@ export const router = createBrowserRouter([
                 path: "admin/dashboard",
 
                 element: (
-
                     <PrivateRoute
                         allowedRole="owner"
                     >
                         <AdminDashboard />
                     </PrivateRoute>
-
                 ),
+
             },
 
 
             // ==================================
             // MANAGE FOODS
-            // OWNER ONLY
             // ==================================
 
             {
                 path: "admin/foods",
 
                 element: (
-
                     <PrivateRoute
                         allowedRole="owner"
                     >
                         <ManageFoods />
                     </PrivateRoute>
-
                 ),
+
             },
 
 
             // ==================================
             // MANAGE TABLES
-            // OWNER ONLY
             // ==================================
 
             {
                 path: "admin/tables",
 
                 element: (
-
                     <PrivateRoute
                         allowedRole="owner"
                     >
                         <ManageTables />
                     </PrivateRoute>
-
                 ),
+
             },
 
 
             // ==================================
-            // QR CODE MANAGER
-            // OWNER ONLY
+            // QR CODES
             // ==================================
 
             {
                 path: "admin/qr-codes",
 
                 element: (
-
                     <PrivateRoute
                         allowedRole="owner"
                     >
                         <QRCodeManager />
                     </PrivateRoute>
-
                 ),
+
             },
 
 
             // ==================================
-            // KITCHEN DASHBOARD
-            // KITCHEN ONLY
+            // KITCHEN
             // ==================================
 
             {
                 path: "kitchen",
 
                 element: (
-
                     <PrivateRoute
                         allowedRole="kitchen"
                     >
                         <KitchenDashboard />
                     </PrivateRoute>
-
                 ),
+
             },
 
         ],
+
     },
 
 ]);

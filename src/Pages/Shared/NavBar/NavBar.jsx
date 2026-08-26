@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router";
+
 import {
   FaUtensils,
   FaShoppingCart,
@@ -12,60 +13,186 @@ import {
 } from "react-icons/fa";
 
 import { useAuth } from "../../../Hooks/useAuth";
+
 import CartContext from "../../../Contexts/CartContext/CartContext";
-import { useContext } from "react";
+
 
 const NavBar = () => {
 
-  const { user, logoutUser } = useAuth();
+  // ==========================
+  // AUTH
+  // ==========================
+
+  const {
+    user,
+    userData,
+    logoutUser,
+  } = useAuth();
+
+
+  // ==========================
+  // CART
+  // ==========================
 
   const { cartItems } = useContext(CartContext);
 
   const cartCount = cartItems.reduce(
-    (total, item) => total + Number(item.quantity || 0),
+    (total, item) =>
+      total + Number(item.quantity || 0),
     0
   );
 
 
+  // ==========================
+  // LOGOUT
+  // ==========================
+
   const handleLogout = async () => {
+
     try {
+
       await logoutUser();
+
     } catch (error) {
-      console.error("Logout error:", error);
+
+      console.error(
+        "Logout error:",
+        error
+      );
+
     }
+
   };
 
 
+  // ==========================
+  // USER NAME
+  // ==========================
+
+  const getUserName = () => {
+
+    if (userData?.name) {
+      return userData.name;
+    }
+
+    if (user?.email) {
+      return user.email.split("@")[0];
+    }
+
+    return "Account";
+
+  };
+
+
+  // ==========================
+  // DASHBOARD LINK
+  // ==========================
+
+  const getDashboardLink = () => {
+
+    if (userData?.role === "owner") {
+
+      return "/admin/dashboard";
+
+    }
+
+    if (userData?.role === "kitchen") {
+
+      return "/kitchen";
+
+    }
+
+    return null;
+
+  };
+
+
+  const dashboardLink =
+    getDashboardLink();
+
+
   return (
-    <nav className="sticky top-0 z-50 bg-[#F7F5EF]/95 backdrop-blur-md border-b border-[#D8D5CC] shadow-sm">
 
-      <div className="navbar max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
+    <nav className="
+      sticky
+      top-0
+      z-50
+      bg-[#F7F5EF]/95
+      backdrop-blur-md
+      border-b
+      border-[#D8D5CC]
+      shadow-sm
+    ">
 
-        {/* LOGO */}
+      <div className="
+        navbar
+        max-w-7xl
+        mx-auto
+        px-4
+        md:px-8
+        lg:px-12
+      ">
+
+
+        {/* ==========================
+            LOGO
+        ========================== */}
+
         <div className="navbar-start">
 
           <Link
             to="/"
-            className="flex items-center gap-3 text-[#252525] hover:text-[#B8A77A] transition-all duration-300"
+            className="
+              flex
+              items-center
+              gap-3
+              text-[#252525]
+              hover:text-[#B8A77A]
+              transition-all
+              duration-300
+            "
           >
 
-            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+            <div className="
+              w-10
+              h-10
+              rounded-full
+              overflow-hidden
+              flex
+              items-center
+              justify-center
+            ">
 
               <img
                 src="/zestro.jpg"
                 alt="ZESTRO Logo"
-                className="w-full h-full object-cover"
+                className="
+                  w-full
+                  h-full
+                  object-cover
+                "
               />
 
             </div>
 
+
             <div>
 
-              <h1 className="text-2xl font-bold tracking-[0.15em]">
+              <h1 className="
+                text-2xl
+                font-bold
+                tracking-[0.15em]
+              ">
                 ZESTRO
               </h1>
 
-              <p className="text-[9px] tracking-[0.35em] text-[#8C877C] uppercase -mt-1">
+              <p className="
+                text-[9px]
+                tracking-[0.35em]
+                text-[#8C877C]
+                uppercase
+                -mt-1
+              ">
                 Restaurant
               </p>
 
@@ -76,46 +203,109 @@ const NavBar = () => {
         </div>
 
 
-        {/* DESKTOP MENU */}
 
-        <div className="navbar-center hidden lg:flex">
+        {/* ==========================
+            DESKTOP MENU
+        ========================== */}
 
-          <ul className="flex items-center gap-2">
+        <div className="
+          navbar-center
+          hidden
+          lg:flex
+        ">
+
+          <ul className="
+            flex
+            items-center
+            gap-2
+          ">
+
+
+            {/* HOME */}
 
             <li>
+
               <Link
                 to="/"
-                className="px-5 py-2 text-sm font-medium text-[#3A3935] rounded-full hover:bg-[#E7E5DF]"
+                className="
+                  px-5
+                  py-2
+                  text-sm
+                  font-medium
+                  text-[#3A3935]
+                  rounded-full
+                  hover:bg-[#E7E5DF]
+                "
               >
                 Home
               </Link>
+
             </li>
 
+
+            {/* MENU */}
+
             <li>
+
               <Link
                 to="/menu/vQ5eOlXzEZK0WaruROok"
-                className="px-5 py-2 text-sm font-medium text-[#3A3935] rounded-full hover:bg-[#E7E5DF]"
+                className="
+                  px-5
+                  py-2
+                  text-sm
+                  font-medium
+                  text-[#3A3935]
+                  rounded-full
+                  hover:bg-[#E7E5DF]
+                "
               >
                 Menu
               </Link>
+
             </li>
 
+
+            {/* ABOUT */}
+
             <li>
+
               <Link
                 to="/about"
-                className="px-5 py-2 text-sm font-medium text-[#3A3935] rounded-full hover:bg-[#E7E5DF]"
+                className="
+                  px-5
+                  py-2
+                  text-sm
+                  font-medium
+                  text-[#3A3935]
+                  rounded-full
+                  hover:bg-[#E7E5DF]
+                "
               >
                 About
               </Link>
+
             </li>
 
+
+            {/* CONTACT */}
+
             <li>
+
               <Link
                 to="/contact"
-                className="px-5 py-2 text-sm font-medium text-[#3A3935] rounded-full hover:bg-[#E7E5DF]"
+                className="
+                  px-5
+                  py-2
+                  text-sm
+                  font-medium
+                  text-[#3A3935]
+                  rounded-full
+                  hover:bg-[#E7E5DF]
+                "
               >
                 Contact
               </Link>
+
             </li>
 
           </ul>
@@ -123,12 +313,20 @@ const NavBar = () => {
         </div>
 
 
-        {/* RIGHT */}
 
-        <div className="navbar-end gap-2">
+        {/* ==========================
+            RIGHT SIDE
+        ========================== */}
+
+        <div className="
+          navbar-end
+          gap-2
+        ">
 
 
-          {/* CART */}
+          {/* ==========================
+              CART
+          ========================== */}
 
           <Link
             to="/cart"
@@ -147,29 +345,32 @@ const NavBar = () => {
             "
           >
 
-            <FaShoppingCart className="text-lg" />
+            <FaShoppingCart
+              className="text-lg"
+            />
+
 
             {cartCount > 0 && (
 
-              <span
-                className="
-                  absolute
-                  -top-1
-                  -right-1
-                  min-w-5
-                  h-5
-                  px-1
-                  rounded-full
-                  bg-[#252525]
-                  text-[#F7F5EF]
-                  text-[10px]
-                  font-bold
-                  flex
-                  items-center
-                  justify-center
-                "
-              >
+              <span className="
+                absolute
+                -top-1
+                -right-1
+                min-w-5
+                h-5
+                px-1
+                rounded-full
+                bg-[#252525]
+                text-[#F7F5EF]
+                text-[10px]
+                font-bold
+                flex
+                items-center
+                justify-center
+              ">
+
                 {cartCount}
+
               </span>
 
             )}
@@ -177,33 +378,70 @@ const NavBar = () => {
           </Link>
 
 
-          {/* USER */}
+
+          {/* ==========================
+              DESKTOP USER
+          ========================== */}
 
           {user ? (
 
-            <div className="dropdown dropdown-end hidden sm:block">
+            <div className="
+              dropdown
+              dropdown-end
+              hidden
+              sm:block
+            ">
 
               <button
                 tabIndex={0}
-                className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-[#E7E5DF]"
+                className="
+                  flex
+                  items-center
+                  gap-2
+                  px-3
+                  py-2
+                  rounded-full
+                  hover:bg-[#E7E5DF]
+                "
               >
 
-                <FaUserCircle className="text-3xl text-[#252525]" />
+                <FaUserCircle
+                  className="
+                    text-3xl
+                    text-[#252525]
+                  "
+                />
 
-                <div className="hidden md:block text-left">
 
-                  <p className="text-sm font-semibold text-[#252525]">
-                    {user.email?.split("@")[0]}
+                <div className="
+                  hidden
+                  md:block
+                  text-left
+                ">
+
+                  <p className="
+                    text-sm
+                    font-semibold
+                    text-[#252525]
+                  ">
+                    {getUserName()}
                   </p>
 
-                  <p className="text-[10px] text-[#8C877C]">
-                    Account
+                  <p className="
+                    text-[10px]
+                    text-[#8C877C]
+                    capitalize
+                  ">
+                    {userData?.role || "Customer"}
                   </p>
 
                 </div>
 
               </button>
 
+
+
+              {/* USER DROPDOWN */}
 
               <ul
                 tabIndex={0}
@@ -222,22 +460,58 @@ const NavBar = () => {
                 "
               >
 
-                {/* USER */}
 
-                <li className="mb-2 pointer-events-none">
+                {/* USER INFORMATION */}
 
-                  <div className="flex items-center gap-3 px-3 py-3 bg-[#E7E5DF] rounded-xl">
+                <li className="
+                  mb-2
+                  pointer-events-none
+                ">
 
-                    <FaUserCircle className="text-3xl text-[#252525]" />
+                  <div className="
+                    flex
+                    items-center
+                    gap-3
+                    px-3
+                    py-3
+                    bg-[#E7E5DF]
+                    rounded-xl
+                  ">
 
-                    <div className="min-w-0">
+                    <FaUserCircle
+                      className="
+                        text-3xl
+                        text-[#252525]
+                      "
+                    />
 
-                      <p className="font-semibold text-[#252525] truncate">
-                        {user.email?.split("@")[0]}
+                    <div className="
+                      min-w-0
+                    ">
+
+                      <p className="
+                        font-semibold
+                        text-[#252525]
+                        truncate
+                      ">
+                        {getUserName()}
                       </p>
 
-                      <p className="text-xs text-[#6F6B62] truncate">
+                      <p className="
+                        text-xs
+                        text-[#6F6B62]
+                        truncate
+                      ">
                         {user.email}
+                      </p>
+
+                      <p className="
+                        text-[10px]
+                        text-[#9A8654]
+                        capitalize
+                        mt-1
+                      ">
+                        {userData?.role || "customer"}
                       </p>
 
                     </div>
@@ -247,67 +521,102 @@ const NavBar = () => {
                 </li>
 
 
-                {/* ORDER TRACKING */}
+
+                {/* ==========================
+                    DASHBOARD
+                ========================== */}
+
+                {dashboardLink && (
+
+                  <li>
+
+                    <Link
+                      to={dashboardLink}
+                      className="
+                        text-[#3A3935]
+                        hover:bg-[#E7E5DF]
+                      "
+                    >
+
+                      <FaTachometerAlt />
+
+                      {userData?.role === "owner"
+                        ? "Admin Dashboard"
+                        : "Kitchen Dashboard"
+                      }
+
+                    </Link>
+
+                  </li>
+
+                )}
+
+
+
+                {/* ==========================
+                    ORDER TRACKING
+                ========================== */}
+
+                {/*
 
                 <li>
 
                   <Link
                     to="/order-tracking"
-                    className="text-[#3A3935] hover:bg-[#E7E5DF]"
+                    className="
+                      text-[#3A3935]
+                      hover:bg-[#E7E5DF]
+                    "
                   >
+
                     <FaReceipt />
+
                     Order Tracking
+
                   </Link>
 
                 </li>
 
+                */}
 
-                {/* ORDER HISTORY */}
+
+
+                {/* ==========================
+                    ORDER HISTORY
+                ========================== */}
+
+                {/*
 
                 <li>
 
                   <Link
                     to="/order-history"
-                    className="text-[#3A3935] hover:bg-[#E7E5DF]"
+                    className="
+                      text-[#3A3935]
+                      hover:bg-[#E7E5DF]
+                    "
                   >
+
                     <FaHistory />
+
                     Order History
+
                   </Link>
 
                 </li>
 
-
-                {/* DASHBOARD */}
-
-                <li>
-
-                  <Link
-                    to="/admin/dashboard"
-                    className="text-[#3A3935] hover:bg-[#E7E5DF]"
-                  >
-                    <FaTachometerAlt />
-                    Dashboard
-                  </Link>
-
-                </li>
+                */}
 
 
-                {/* PROFILE */}
 
-                <li>
+                {/* DIVIDER */}
 
-                  <Link
-                    to="/profile"
-                    className="text-[#3A3935] hover:bg-[#E7E5DF]"
-                  >
-                    <FaUserCircle />
-                    Profile
-                  </Link>
+                <div className="
+                  border-t
+                  border-[#D8D5CC]
+                  my-2
+                "></div>
 
-                </li>
-
-
-                <div className="border-t border-[#D8D5CC] my-2"></div>
 
 
                 {/* LOGOUT */}
@@ -316,10 +625,16 @@ const NavBar = () => {
 
                   <button
                     onClick={handleLogout}
-                    className="text-red-500 hover:bg-red-50"
+                    className="
+                      text-red-500
+                      hover:bg-red-50
+                    "
                   >
+
                     <FaSignOutAlt />
+
                     Logout
+
                   </button>
 
                 </li>
@@ -330,9 +645,24 @@ const NavBar = () => {
 
           ) : (
 
+            /* LOGIN */
+
             <Link
               to="/login"
-              className="hidden sm:flex items-center justify-center px-6 py-2.5 rounded-full bg-[#252525] text-[#F7F5EF] text-sm font-medium hover:bg-[#B8A77A]"
+              className="
+                hidden
+                sm:flex
+                items-center
+                justify-center
+                px-6
+                py-2.5
+                rounded-full
+                bg-[#252525]
+                text-[#F7F5EF]
+                text-sm
+                font-medium
+                hover:bg-[#B8A77A]
+              "
             >
               Login
             </Link>
@@ -340,16 +670,37 @@ const NavBar = () => {
           )}
 
 
-          {/* MOBILE */}
 
-          <div className="dropdown dropdown-end lg:hidden">
+          {/* ==========================
+              MOBILE MENU
+          ========================== */}
+
+          <div className="
+            dropdown
+            dropdown-end
+            lg:hidden
+          ">
 
             <button
               tabIndex={0}
-              className="w-11 h-11 rounded-full flex items-center justify-center text-[#252525] hover:bg-[#E7E5DF]"
+              className="
+                w-11
+                h-11
+                rounded-full
+                flex
+                items-center
+                justify-center
+                text-[#252525]
+                hover:bg-[#E7E5DF]
+              "
             >
-              <FaBars className="text-xl" />
+
+              <FaBars
+                className="text-xl"
+              />
+
             </button>
+
 
 
             <ul
@@ -369,75 +720,273 @@ const NavBar = () => {
               "
             >
 
+
+              {/* HOME */}
+
               <li>
+
                 <Link to="/">
                   Home
                 </Link>
+
               </li>
 
+
+              {/* MENU */}
+
               <li>
-                <Link to="/menu/vQ5eOlXzEZK0WaruROok">
+
+                <Link
+                  to="/menu/vQ5eOlXzEZK0WaruROok"
+                >
                   Menu
                 </Link>
+
               </li>
 
+
+              {/* ABOUT */}
+
               <li>
+
                 <Link to="/about">
                   About
                 </Link>
+
               </li>
 
+
+              {/* CONTACT */}
+
               <li>
+
                 <Link to="/contact">
                   Contact
                 </Link>
+
               </li>
 
 
+
+              {/* ==========================
+                  LOGGED IN USER
+              ========================== */}
+
               {user && (
+
                 <>
 
-                  <div className="border-t border-[#D8D5CC] my-2"></div>
+                  <div className="
+                    border-t
+                    border-[#D8D5CC]
+                    my-2
+                  "></div>
+
+
+
+                  {/* USER INFO */}
+
+                  <li className="
+                    pointer-events-none
+                  ">
+
+                    <div className="
+                      flex
+                      items-center
+                      gap-3
+                      bg-[#E7E5DF]
+                      rounded-xl
+                      px-3
+                      py-3
+                    ">
+
+                      <FaUserCircle
+                        className="
+                          text-2xl
+                          text-[#252525]
+                        "
+                      />
+
+                      <div className="
+                        min-w-0
+                      ">
+
+                        <p className="
+                          font-semibold
+                          text-[#252525]
+                          truncate
+                        ">
+                          {getUserName()}
+                        </p>
+
+                        <p className="
+                          text-xs
+                          text-[#6F6B62]
+                          truncate
+                        ">
+                          {user.email}
+                        </p>
+
+                        <p className="
+                          text-[10px]
+                          text-[#9A8654]
+                          capitalize
+                        ">
+                          {userData?.role || "customer"}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </li>
+
+
+
+                  {/* ==========================
+                      DASHBOARD
+                  ========================== */}
+
+                  {dashboardLink && (
+
+                    <li>
+
+                      <Link
+                        to={dashboardLink}
+                      >
+
+                        <FaTachometerAlt />
+
+                        {userData?.role === "owner"
+                          ? "Admin Dashboard"
+                          : "Kitchen Dashboard"
+                        }
+
+                      </Link>
+
+                    </li>
+
+                  )}
+
+
+
+                  {/* ==========================
+                      ORDER TRACKING
+                  ========================== */}
+
+                  {/*
 
                   <li>
+
                     <Link to="/order-tracking">
+
                       <FaReceipt />
+
                       Order Tracking
+
                     </Link>
+
                   </li>
 
+                  */}
+
+
+
+                  {/* ==========================
+                      ORDER HISTORY
+                  ========================== */}
+
+                  {/*
+
                   <li>
+
                     <Link to="/order-history">
+
                       <FaHistory />
+
                       Order History
+
                     </Link>
+
                   </li>
 
-                  <li>
-                    <Link to="/admin/dashboard">
-                      <FaTachometerAlt />
-                      Dashboard
-                    </Link>
-                  </li>
+                  */}
+
+
+
+                  {/* PROFILE */}
+
+                  {/*
 
                   <li>
+
                     <Link to="/profile">
+
                       <FaUserCircle />
+
                       Profile
+
                     </Link>
+
                   </li>
 
+                  */}
+
+
+
+                  {/* LOGOUT */}
+
                   <li>
+
                     <button
                       onClick={handleLogout}
-                      className="text-red-500"
+                      className="
+                        text-red-500
+                      "
                     >
+
                       <FaSignOutAlt />
+
                       Logout
+
                     </button>
+
                   </li>
 
                 </>
+
+              )}
+
+
+              {/* ==========================
+                  MOBILE LOGIN
+              ========================== */}
+
+              {!user && (
+
+                <>
+
+                  <div className="
+                    border-t
+                    border-[#D8D5CC]
+                    my-2
+                  "></div>
+
+                  <li>
+
+                    <Link
+                      to="/login"
+                      className="
+                        font-semibold
+                      "
+                    >
+                      Login
+                    </Link>
+
+                  </li>
+
+                </>
+
               )}
 
             </ul>
