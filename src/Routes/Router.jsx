@@ -53,6 +53,8 @@ import KitchenDashboard from "../Pages/Admin/Kitchen/KitchenDashboard/KitchenDas
 // ==========================================
 
 import PrivateRoute from "./PrivateRoute";
+import About from "../Components/About/About";
+import Contact from "../Pages/Contact/Contact";
 
 
 // ==========================================
@@ -75,6 +77,14 @@ export const router = createBrowserRouter([
             {
                 index: true,
                 Component: Home,
+            },
+             {
+                path: "about",
+                Component: About,
+            },
+            {
+                path: "contact",
+                Component: Contact,
             },
 
 
