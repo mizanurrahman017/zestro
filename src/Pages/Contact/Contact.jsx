@@ -29,25 +29,22 @@ const Contact = () => {
 
     try {
       await emailjs.sendForm(
-        "YOUR_SERVICE_ID",
-        "YOUR_TEMPLATE_ID",
+        "service_wn0164g",
+        "template_reo52ht",
         form.current,
         {
-          publicKey: "YOUR_PUBLIC_KEY",
+          publicKey: "haRn69sETVjK_mls_",
         }
       );
 
-      // SUCCESS
       setSuccess(true);
       form.current.reset();
 
-      // Hide success message after 5 seconds
       setTimeout(() => {
         setSuccess(false);
       }, 5000);
     } catch (err) {
       console.error("EmailJS Error:", err);
-
       setError("Message could not be sent. Please try again.");
     } finally {
       setLoading(false);
@@ -92,7 +89,6 @@ const Contact = () => {
           ================================== */}
           <div className="lg:col-span-2">
 
-            {/* CONTACT INFORMATION */}
             <div className="bg-[#252525] text-white rounded-[32px] p-7 md:p-9 h-full">
 
               <p className="text-[#C8B77F] text-xs uppercase tracking-[0.25em] font-semibold">
@@ -111,12 +107,8 @@ const Contact = () => {
               {/* ==================================
                   LOCATION
               ================================== */}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex gap-4 mt-8 group cursor-pointer"
-              >
+              <div className="flex gap-4 mt-8">
+
                 <div
                   className="
                     w-11
@@ -128,9 +120,6 @@ const Contact = () => {
                     justify-center
                     text-[#C8B77F]
                     shrink-0
-                    group-hover:bg-[#C8B77F]
-                    group-hover:text-[#252525]
-                    transition
                   "
                 >
                   <FaMapMarkerAlt />
@@ -142,10 +131,33 @@ const Contact = () => {
                   </p>
 
                   <p className="text-sm text-white/50 mt-1">
-                    Add your Google Maps location
+                    ZESTRO Restaurant
+                  </p>
+
+                  <p className="text-sm text-white/50 mt-1">
+                    Your restaurant address
                   </p>
                 </div>
-              </a>
+
+              </div>
+
+              {/* ==================================
+                  GOOGLE MAP
+              ================================== */}
+              <div className="mt-6 overflow-hidden rounded-2xl border border-white/10">
+
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4453.153280975096!2d91.86941307604766!3d24.89557324385041!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3750550058fb4039%3A0x850e0cce596d9428!2sZestro!5e1!3m2!1sen!2sbd!4v1787785147332!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+                  width="100%"
+                  height="250"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="ZESTRO Restaurant Location"
+                ></iframe>
+
+              </div>
 
               {/* ==================================
                   EMAIL
@@ -154,6 +166,7 @@ const Contact = () => {
                 href="mailto:YOUR_EMAIL@gmail.com"
                 className="flex gap-4 mt-6 group"
               >
+
                 <div
                   className="
                     w-11
@@ -182,6 +195,7 @@ const Contact = () => {
                     YOUR_EMAIL@gmail.com
                   </p>
                 </div>
+
               </a>
 
               {/* ==================================
@@ -191,6 +205,7 @@ const Contact = () => {
                 href="tel:+8801XXXXXXXXX"
                 className="flex gap-4 mt-6 group"
               >
+
                 <div
                   className="
                     w-11
@@ -219,6 +234,7 @@ const Contact = () => {
                     +880 1XXXXXXXXX
                   </p>
                 </div>
+
               </a>
 
               {/* ==================================
@@ -253,32 +269,6 @@ const Contact = () => {
                 </div>
 
               </div>
-
-              {/* ==================================
-                  MAP BUTTON
-              ================================== */}
-              <a
-                href="https://www.google.com/maps/place/Zestro/@24.8956011,91.8720997,64m/data=!3m1!1e3!4m14!1m7!3m6!1s0x3750550058fb4039:0x850e0cce596d9428!2sZestro!8m2!3d24.8955684!4d91.871988!16s%2Fg%2F11npty_2qc!3m5!1s0x3750550058fb4039:0x850e0cce596d9428!8m2!3d24.8955684!4d91.871988!16s%2Fg%2F11npty_2qc?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw%3D%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  block
-                  mt-9
-                  text-center
-                  border
-                  border-white/20
-                  rounded-2xl
-                  py-3
-                  text-sm
-                  font-semibold
-                  text-white
-                  hover:bg-white
-                  hover:text-[#252525]
-                  transition
-                "
-              >
-                View on Google Maps
-              </a>
 
             </div>
           </div>
@@ -376,15 +366,7 @@ const Contact = () => {
               {/* NAME */}
               <div>
 
-                <label
-                  className="
-                    block
-                    text-sm
-                    font-semibold
-                    text-[#3A3935]
-                    mb-2
-                  "
-                >
+                <label className="block text-sm font-semibold text-[#3A3935] mb-2">
                   Your Name
                 </label>
 
@@ -416,15 +398,7 @@ const Contact = () => {
               {/* EMAIL */}
               <div>
 
-                <label
-                  className="
-                    block
-                    text-sm
-                    font-semibold
-                    text-[#3A3935]
-                    mb-2
-                  "
-                >
+                <label className="block text-sm font-semibold text-[#3A3935] mb-2">
                   Email Address
                 </label>
 
@@ -456,15 +430,7 @@ const Contact = () => {
               {/* SUBJECT */}
               <div>
 
-                <label
-                  className="
-                    block
-                    text-sm
-                    font-semibold
-                    text-[#3A3935]
-                    mb-2
-                  "
-                >
+                <label className="block text-sm font-semibold text-[#3A3935] mb-2">
                   Subject
                 </label>
 
@@ -496,15 +462,7 @@ const Contact = () => {
               {/* MESSAGE */}
               <div>
 
-                <label
-                  className="
-                    block
-                    text-sm
-                    font-semibold
-                    text-[#3A3935]
-                    mb-2
-                  "
-                >
+                <label className="block text-sm font-semibold text-[#3A3935] mb-2">
                   Message
                 </label>
 
@@ -578,6 +536,7 @@ const Contact = () => {
 
           </div>
         </div>
+
       </section>
     </div>
   );
