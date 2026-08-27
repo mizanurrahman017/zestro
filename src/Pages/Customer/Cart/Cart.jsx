@@ -1290,7 +1290,7 @@ const Cart = () => {
 
 
                             <Link
-                                to="/"
+                                to="/menu/vQ5eOlXzEZK0WaruROok"
                                 className="
                                     flex
                                     items-center

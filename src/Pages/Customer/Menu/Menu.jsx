@@ -50,9 +50,102 @@ const Menu = () => {
     ] = useSearchParams();
 
 
-    // QR থেকে ?table=1 পাওয়া যাবে
-    const tableId =
+    // ==========================================
+    // QR TABLE PARAMETER
+    // ==========================================
+
+    const urlTableId =
         searchParams.get("table");
+
+
+    // ==========================================
+    // PERSISTENT TABLE STORAGE
+    // ==========================================
+
+    const getSavedTable = () => {
+
+        if (!restaurantId) {
+            return null;
+        }
+
+        return sessionStorage.getItem(
+            `zestro_table_${restaurantId}`
+        );
+    };
+
+
+    // ==========================================
+    // TABLE STATE
+    // ==========================================
+
+    const [
+        tableId,
+        setTableId,
+    ] = useState(() => {
+
+        // প্রথমে QR URL থেকে table নেবে
+        if (urlTableId) {
+            return urlTableId;
+        }
+
+        // URL-এ না থাকলে sessionStorage থেকে নেবে
+        return getSavedTable();
+
+    });
+
+
+    // ==========================================
+    // SAVE TABLE WHEN QR SCANNED
+    // ==========================================
+
+    useEffect(() => {
+
+        if (!restaurantId) {
+            return;
+        }
+
+
+        // ======================================
+        // QR SCAN করে নতুন table এলে
+        // ======================================
+
+        if (urlTableId) {
+
+            sessionStorage.setItem(
+                `zestro_table_${restaurantId}`,
+                urlTableId
+            );
+
+            setTableId(
+                urlTableId
+            );
+
+            return;
+        }
+
+
+        // ======================================
+        // URL-এ table না থাকলে saved table
+        // ======================================
+
+        const savedTable =
+            sessionStorage.getItem(
+                `zestro_table_${restaurantId}`
+            );
+
+
+        if (savedTable) {
+
+            setTableId(
+                savedTable
+            );
+
+        }
+
+    }, [
+        restaurantId,
+        urlTableId,
+    ]);
 
 
     // ==========================================
@@ -74,25 +167,30 @@ const Menu = () => {
         setActiveCategory,
     ] = useState("All");
 
+
     const [
         search,
         setSearch,
     ] = useState("");
+
 
     const [
         foods,
         setFoods,
     ] = useState([]);
 
+
     const [
         loading,
         setLoading,
     ] = useState(true);
 
+
     const [
         error,
         setError,
     ] = useState("");
+
 
     const [
         addedFoodId,
@@ -173,7 +271,9 @@ const Menu = () => {
                     );
 
 
-                setFoods(foodList);
+                setFoods(
+                    foodList
+                );
 
             } catch (error) {
 
@@ -191,6 +291,7 @@ const Menu = () => {
                 setLoading(false);
 
             }
+
         };
 
 
@@ -223,6 +324,7 @@ const Menu = () => {
                 categoryMatch &&
                 searchMatch
             );
+
         });
 
 
@@ -240,13 +342,21 @@ const Menu = () => {
             restaurantId:
                 restaurantId,
 
-            // QR table ID
+            // IMPORTANT
+            // Current table ID
             tableId:
                 tableId || null,
+
+            // Table number
+            tableNumber:
+                tableId || null,
+
         };
 
 
-        addToCart(cartFood);
+        addToCart(
+            cartFood
+        );
 
 
         setAddedFoodId(
@@ -256,9 +366,12 @@ const Menu = () => {
 
         setTimeout(() => {
 
-            setAddedFoodId(null);
+            setAddedFoodId(
+                null
+            );
 
         }, 1200);
+
     };
 
 
@@ -269,20 +382,42 @@ const Menu = () => {
     if (loading) {
 
         return (
-            <div className="min-h-screen bg-[#F7F5EF] flex items-center justify-center">
 
-                <div className="text-center">
+            <div className="
+                min-h-screen
+                bg-[#F7F5EF]
+                flex
+                items-center
+                justify-center
+            ">
 
-                    <span className="loading loading-spinner loading-lg text-[#9A8654]"></span>
+                <div className="
+                    text-center
+                ">
 
-                    <p className="mt-4 text-[#6F6B62]">
+                    <span className="
+                        loading
+                        loading-spinner
+                        loading-lg
+                        text-[#9A8654]
+                    "></span>
+
+
+                    <p className="
+                        mt-4
+                        text-[#6F6B62]
+                    ">
+
                         Loading menu...
+
                     </p>
 
                 </div>
 
             </div>
+
         );
+
     }
 
 
@@ -292,49 +427,118 @@ const Menu = () => {
 
     return (
 
-        <div className="min-h-screen bg-[#F7F5EF]">
+        <div className="
+            min-h-screen
+            bg-[#F7F5EF]
+        ">
 
 
             {/* ==================================
                 HEADER
             ================================== */}
 
-            <section className="bg-[#E8E4D9] text-[#252525] border-b border-[#D8D3C6]">
+            <section className="
+                bg-[#E8E4D9]
+                text-[#252525]
+                border-b
+                border-[#D8D3C6]
+            ">
 
-                <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12 py-16 md:py-20">
+                <div className="
+                    max-w-7xl
+                    mx-auto
+                    px-5
+                    md:px-8
+                    lg:px-12
+                    py-16
+                    md:py-20
+                ">
 
-                    <div className="text-center">
+                    <div className="
+                        text-center
+                    ">
 
-                        <p className="text-[#9A8654] text-sm uppercase tracking-[0.3em] font-semibold">
+
+                        <p className="
+                            text-[#9A8654]
+                            text-sm
+                            uppercase
+                            tracking-[0.3em]
+                            font-semibold
+                        ">
+
                             ZESTRO Restaurant
+
                         </p>
 
 
-                        <h1 className="text-4xl md:text-6xl font-bold mt-4 tracking-tight text-[#252525]">
+                        <h1 className="
+                            text-4xl
+                            md:text-6xl
+                            font-bold
+                            mt-4
+                            tracking-tight
+                            text-[#252525]
+                        ">
+
                             Our Menu
+
                         </h1>
 
 
-                        <p className="text-[#6F6B62] max-w-xl mx-auto mt-5 leading-7">
-                            Explore our delicious selection of freshly
-                            prepared food and discover your next favorite dish.
+                        <p className="
+                            text-[#6F6B62]
+                            max-w-xl
+                            mx-auto
+                            mt-5
+                            leading-7
+                        ">
+
+                            Explore our delicious selection
+                            of freshly prepared food and
+                            discover your next favorite dish.
+
                         </p>
 
 
                         {/* ==================================
-                            QR TABLE INFORMATION
+                            TABLE INFORMATION
                         ================================== */}
 
                         {tableId && (
 
-                            <div className="mt-6 inline-flex items-center gap-2 bg-white px-5 py-2.5 rounded-full border border-[#D8D3C6]">
+                            <div className="
+                                mt-6
+                                inline-flex
+                                items-center
+                                gap-2
+                                bg-white
+                                px-5
+                                py-2.5
+                                rounded-full
+                                border
+                                border-[#D8D3C6]
+                                shadow-sm
+                            ">
 
-                                <span className="text-sm text-[#8C877C]">
+                                <span className="
+                                    text-sm
+                                    text-[#8C877C]
+                                ">
+
                                     Ordering from
+
                                 </span>
 
-                                <span className="text-sm text-[#9A8654] font-bold">
+
+                                <span className="
+                                    text-sm
+                                    text-[#9A8654]
+                                    font-bold
+                                ">
+
                                     Table {tableId}
+
                                 </span>
 
                             </div>
@@ -348,19 +552,38 @@ const Menu = () => {
             </section>
 
 
-
             {/* ==================================
                 MENU CONTENT
             ================================== */}
 
-            <section className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12 py-12 md:py-16">
+            <section className="
+                max-w-7xl
+                mx-auto
+                px-5
+                md:px-8
+                lg:px-12
+                py-12
+                md:py-16
+            ">
 
 
                 {/* ERROR */}
 
                 {error && (
 
-                    <div className="max-w-xl mx-auto mb-8 bg-red-50 border border-red-200 text-red-600 px-5 py-4 rounded-xl text-center">
+                    <div className="
+                        max-w-xl
+                        mx-auto
+                        mb-8
+                        bg-red-50
+                        border
+                        border-red-200
+                        text-red-600
+                        px-5
+                        py-4
+                        rounded-xl
+                        text-center
+                    ">
 
                         {error}
 
@@ -369,12 +592,21 @@ const Menu = () => {
                 )}
 
 
-
                 {/* SEARCH */}
 
-                <div className="max-w-xl mx-auto relative">
+                <div className="
+                    max-w-xl
+                    mx-auto
+                    relative
+                ">
 
-                    <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-[#8C877C]" />
+                    <FaSearch className="
+                        absolute
+                        left-5
+                        top-1/2
+                        -translate-y-1/2
+                        text-[#8C877C]
+                    " />
 
 
                     <input
@@ -408,10 +640,17 @@ const Menu = () => {
                 </div>
 
 
-
                 {/* CATEGORIES */}
 
-                <div className="flex gap-3 overflow-x-auto py-8 scrollbar-hide justify-start md:justify-center">
+                <div className="
+                    flex
+                    gap-3
+                    overflow-x-auto
+                    py-8
+                    scrollbar-hide
+                    justify-start
+                    md:justify-center
+                ">
 
                     {categories.map(
                         (category) => (
@@ -440,7 +679,9 @@ const Menu = () => {
                                     }
                                 `}
                             >
+
                                 {category}
+
                             </button>
 
                         )
@@ -449,14 +690,22 @@ const Menu = () => {
                 </div>
 
 
-
                 {/* RESULT INFO */}
 
-                <div className="flex items-center justify-between mb-7">
+                <div className="
+                    flex
+                    items-center
+                    justify-between
+                    mb-7
+                ">
 
                     <div>
 
-                        <h2 className="text-2xl font-bold text-[#252525]">
+                        <h2 className="
+                            text-2xl
+                            font-bold
+                            text-[#252525]
+                        ">
 
                             {activeCategory === "All"
                                 ? "All Foods"
@@ -465,14 +714,19 @@ const Menu = () => {
                         </h2>
 
 
-                        <p className="text-sm text-[#8C877C] mt-1">
+                        <p className="
+                            text-sm
+                            text-[#8C877C]
+                            mt-1
+                        ">
 
-                            {filteredFoods.length} items available
+                            {filteredFoods.length}
+                            {" "}
+                            items available
 
                         </p>
 
                     </div>
-
 
 
                     {/* CART */}
@@ -499,25 +753,25 @@ const Menu = () => {
 
                         {cartCount > 0 && (
 
-                            <span
-                                className="
-                                    absolute
-                                    -top-2
-                                    -right-2
-                                    min-w-5
-                                    h-5
-                                    px-1
-                                    rounded-full
-                                    bg-[#9A8654]
-                                    text-white
-                                    text-[10px]
-                                    font-bold
-                                    flex
-                                    items-center
-                                    justify-center
-                                "
-                            >
+                            <span className="
+                                absolute
+                                -top-2
+                                -right-2
+                                min-w-5
+                                h-5
+                                px-1
+                                rounded-full
+                                bg-[#9A8654]
+                                text-white
+                                text-[10px]
+                                font-bold
+                                flex
+                                items-center
+                                justify-center
+                            ">
+
                                 {cartCount}
+
                             </span>
 
                         )}
@@ -527,12 +781,17 @@ const Menu = () => {
                 </div>
 
 
-
                 {/* FOOD GRID */}
 
                 {filteredFoods.length > 0 ? (
 
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="
+                        grid
+                        sm:grid-cols-2
+                        lg:grid-cols-3
+                        xl:grid-cols-4
+                        gap-6
+                    ">
 
                         {filteredFoods.map(
                             (food) => (
@@ -553,10 +812,12 @@ const Menu = () => {
                                     "
                                 >
 
-
                                     {/* IMAGE */}
 
-                                    <div className="relative overflow-hidden">
+                                    <div className="
+                                        relative
+                                        overflow-hidden
+                                    ">
 
                                         <img
                                             src={food.image}
@@ -574,21 +835,22 @@ const Menu = () => {
 
                                         {/* PRICE */}
 
-                                        <div
-                                            className="
-                                                absolute
-                                                top-4
-                                                right-4
-                                                bg-[#F7F5EF]/95
-                                                backdrop-blur-sm
-                                                px-4
-                                                py-2
-                                                rounded-full
-                                                shadow-sm
-                                            "
-                                        >
+                                        <div className="
+                                            absolute
+                                            top-4
+                                            right-4
+                                            bg-[#F7F5EF]/95
+                                            backdrop-blur-sm
+                                            px-4
+                                            py-2
+                                            rounded-full
+                                            shadow-sm
+                                        ">
 
-                                            <span className="font-bold text-[#252525]">
+                                            <span className="
+                                                font-bold
+                                                text-[#252525]
+                                            ">
 
                                                 ৳{food.price}
 
@@ -599,39 +861,64 @@ const Menu = () => {
                                     </div>
 
 
-
                                     {/* CARD CONTENT */}
 
-                                    <div className="p-5">
+                                    <div className="
+                                        p-5
+                                    ">
 
-
-                                        <p className="text-xs uppercase tracking-[0.2em] text-[#9A8654] font-semibold">
+                                        <p className="
+                                            text-xs
+                                            uppercase
+                                            tracking-[0.2em]
+                                            text-[#9A8654]
+                                            font-semibold
+                                        ">
 
                                             {food.category}
 
                                         </p>
 
 
-                                        <h3 className="text-lg font-bold text-[#252525] mt-2 line-clamp-1">
+                                        <h3 className="
+                                            text-lg
+                                            font-bold
+                                            text-[#252525]
+                                            mt-2
+                                            line-clamp-1
+                                        ">
 
                                             {food.name}
 
                                         </h3>
 
 
-                                        <p className="text-sm text-[#8C877C] mt-2 line-clamp-2">
+                                        <p className="
+                                            text-sm
+                                            text-[#8C877C]
+                                            mt-2
+                                            line-clamp-2
+                                        ">
 
                                             {food.description}
 
                                         </p>
 
 
-
                                         {/* RATING */}
 
-                                        <div className="flex items-center gap-1 mt-3">
+                                        <div className="
+                                            flex
+                                            items-center
+                                            gap-1
+                                            mt-3
+                                        ">
 
-                                            <div className="flex gap-0.5 text-[#B8A77A]">
+                                            <div className="
+                                                flex
+                                                gap-0.5
+                                                text-[#B8A77A]
+                                            ">
 
                                                 <FaStar className="text-xs" />
                                                 <FaStar className="text-xs" />
@@ -642,14 +929,17 @@ const Menu = () => {
                                             </div>
 
 
-                                            <span className="text-xs text-[#8C877C] ml-1">
+                                            <span className="
+                                                text-xs
+                                                text-[#8C877C]
+                                                ml-1
+                                            ">
 
                                                 {food.rating || 5}
 
                                             </span>
 
                                         </div>
-
 
 
                                         {/* ADD TO CART */}
@@ -660,6 +950,7 @@ const Menu = () => {
                                                     food
                                                 )
                                             }
+                                            disabled={!tableId}
                                             className="
                                                 w-full
                                                 mt-5
@@ -675,11 +966,12 @@ const Menu = () => {
                                                 hover:bg-[#9A8654]
                                                 transition-all
                                                 duration-300
+                                                disabled:opacity-40
+                                                disabled:cursor-not-allowed
                                             "
                                         >
 
-                                            {addedFoodId ===
-                                            food.id ? (
+                                            {addedFoodId === food.id ? (
 
                                                 <>
                                                     ✓ Added to Cart
@@ -696,6 +988,23 @@ const Menu = () => {
 
                                         </button>
 
+
+                                        {!tableId && (
+
+                                            <p className="
+                                                text-xs
+                                                text-center
+                                                text-[#9A8654]
+                                                mt-2
+                                            ">
+
+                                                Please scan a table QR code
+                                                to order.
+
+                                            </p>
+
+                                        )}
+
                                     </div>
 
                                 </div>
@@ -707,20 +1016,40 @@ const Menu = () => {
 
                 ) : (
 
-                    <div className="text-center py-20">
+                    <div className="
+                        text-center
+                        py-20
+                    ">
 
-                        <div className="text-5xl mb-5">
+                        <div className="
+                            text-5xl
+                            mb-5
+                        ">
+
                             🍽️
+
                         </div>
 
 
-                        <h3 className="text-2xl font-bold text-[#252525]">
+                        <h3 className="
+                            text-2xl
+                            font-bold
+                            text-[#252525]
+                        ">
+
                             No food found
+
                         </h3>
 
 
-                        <p className="text-[#8C877C] mt-2">
-                            No foods have been added to this restaurant yet.
+                        <p className="
+                            text-[#8C877C]
+                            mt-2
+                        ">
+
+                            No foods have been added
+                            to this restaurant yet.
+
                         </p>
 
                     </div>
@@ -730,7 +1059,9 @@ const Menu = () => {
             </section>
 
         </div>
+
     );
+
 };
 
 
