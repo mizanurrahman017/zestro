@@ -3,7 +3,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
-
+// website complate kintu abar vako vabe chk korte hobe 
 import {
     collection,
     getDocs,
@@ -336,7 +336,7 @@ const Menu = () => {
 
         const cartFood = {
 
-            ...food,
+            ...food, 
 
             // Restaurant ID
             restaurantId:
