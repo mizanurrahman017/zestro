@@ -183,7 +183,7 @@ const NavBar = () => {
                 font-bold
                 tracking-[0.15em]
               ">
-                asif
+                ZESTRO
               </h1>
 
               <p className="
