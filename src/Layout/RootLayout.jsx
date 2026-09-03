@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import Footer from "../Pages/Shared/Footer/Footer";
 import NavBar from '../Pages/Shared/NavBar/NavBar';
+// qr code scab problem 
 
 const RootLayout = () => {
     return (
