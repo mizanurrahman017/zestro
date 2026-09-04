@@ -53,6 +53,8 @@ const Cart = () => {
 
     const [orderError, setOrderError] = useState("");
 
+    const [nameError, setNameError] = useState("");
+
     const [customerName, setCustomerName] = useState("");
 
 
@@ -63,14 +65,10 @@ const Cart = () => {
     useEffect(() => {
 
         const savedCustomerName =
-            localStorage.getItem(
-                "zestro_customer_name"
-            );
+            localStorage.getItem("zestro_customer_name");
 
         if (savedCustomerName) {
-            setCustomerName(
-                savedCustomerName
-            );
+            setCustomerName(savedCustomerName);
         }
 
     }, []);
@@ -83,10 +81,7 @@ const Cart = () => {
     const getCustomerId = () => {
 
         let customerId =
-            localStorage.getItem(
-                "zestro_customer_id"
-            );
-
+            localStorage.getItem("zestro_customer_id");
 
         if (!customerId) {
 
@@ -98,17 +93,13 @@ const Cart = () => {
                     .toString(36)
                     .substring(2, 12);
 
-
             localStorage.setItem(
                 "zestro_customer_id",
                 customerId
             );
-
         }
 
-
         return customerId;
-
     };
 
 
@@ -116,9 +107,7 @@ const Cart = () => {
     // SAVE ORDER ID TO LOCAL STORAGE
     // ==========================================
 
-    const saveOrderToHistory = (
-        orderId
-    ) => {
+    const saveOrderToHistory = (orderId) => {
 
         try {
 
@@ -129,22 +118,17 @@ const Cart = () => {
                     ) || "[]"
                 );
 
-
             const updatedOrders = [
                 orderId,
 
                 ...existingOrders.filter(
-                    (id) =>
-                        id !== orderId
+                    (id) => id !== orderId
                 ),
             ];
 
-
             localStorage.setItem(
                 "zestro_order_history",
-                JSON.stringify(
-                    updatedOrders
-                )
+                JSON.stringify(updatedOrders)
             );
 
         } catch (error) {
@@ -155,7 +139,6 @@ const Cart = () => {
             );
 
         }
-
     };
 
 
@@ -169,12 +152,12 @@ const Cart = () => {
             return;
         }
 
-
         try {
 
             setPlacingOrder(true);
 
             setOrderError("");
+            setNameError("");
 
 
             // ==================================
@@ -193,7 +176,6 @@ const Cart = () => {
                 setPlacingOrder(false);
 
                 return;
-
             }
 
 
@@ -204,17 +186,15 @@ const Cart = () => {
             const trimmedName =
                 customerName.trim();
 
-
             if (!trimmedName) {
 
-                setOrderError(
+                setNameError(
                     "Please enter your name before placing the order."
                 );
 
                 setPlacingOrder(false);
 
                 return;
-
             }
 
 
@@ -244,7 +224,6 @@ const Cart = () => {
                 cartItems[0]?.restaurantId ||
                 null;
 
-
             if (!restaurantId) {
 
                 setOrderError(
@@ -254,7 +233,6 @@ const Cart = () => {
                 setPlacingOrder(false);
 
                 return;
-
             }
 
 
@@ -269,7 +247,7 @@ const Cart = () => {
 
             // ==================================
             // TABLE NUMBER
-            // ==========================================
+            // ==================================
 
             const tableNumber =
                 cartItems[0]?.tableNumber ||
@@ -279,7 +257,7 @@ const Cart = () => {
 
             // ==================================
             // TABLE CHECK
-            // ==========================================
+            // ==================================
 
             if (!tableId) {
 
@@ -290,7 +268,6 @@ const Cart = () => {
                 setPlacingOrder(false);
 
                 return;
-
             }
 
 
@@ -342,9 +319,7 @@ const Cart = () => {
 
             const orderData = {
 
-                // --------------------------------
                 // CUSTOMER
-                // --------------------------------
 
                 customerId:
                     customerId,
@@ -356,17 +331,13 @@ const Cart = () => {
                     "",
 
 
-                // --------------------------------
                 // RESTAURANT
-                // --------------------------------
 
                 restaurantId:
                     restaurantId,
 
 
-                // --------------------------------
                 // TABLE
-                // --------------------------------
 
                 tableId:
                     tableId,
@@ -375,17 +346,13 @@ const Cart = () => {
                     tableNumber,
 
 
-                // --------------------------------
                 // ITEMS
-                // --------------------------------
 
                 items:
                     orderItems,
 
 
-                // --------------------------------
                 // AMOUNT
-                // --------------------------------
 
                 totalAmount:
                     Number(
@@ -393,17 +360,13 @@ const Cart = () => {
                     ),
 
 
-                // --------------------------------
                 // STATUS
-                // --------------------------------
 
                 status:
                     "pending",
 
 
-                // --------------------------------
                 // TIME
-                // --------------------------------
 
                 createdAt:
                     serverTimestamp(),
@@ -422,7 +385,7 @@ const Cart = () => {
 
 
             // ==================================
-            // SAVE TO FIRESTORE
+            // SAVE ORDER TO FIRESTORE
             // ==================================
 
             const orderRef =
@@ -471,7 +434,6 @@ const Cart = () => {
                 "Place order error:",
                 error
             );
-
 
             setOrderError(
                 error?.message ||
@@ -592,7 +554,7 @@ const Cart = () => {
 
 
     // ==========================================
-    // GET CURRENT TABLE
+    // CURRENT TABLE
     // ==========================================
 
     const currentTableNumber =
@@ -684,7 +646,7 @@ const Cart = () => {
 
 
                 {/* ==================================
-                    ERROR
+                    OTHER ERROR
                 ================================== */}
 
                 {orderError && (
@@ -729,9 +691,7 @@ const Cart = () => {
                     ">
 
 
-                        {/* ==================================
-                            TABLE INFORMATION
-                        ================================== */}
+                        {/* TABLE INFORMATION */}
 
                         <div className="
                             bg-[#252525]
@@ -790,9 +750,7 @@ const Cart = () => {
                         </div>
 
 
-                        {/* ==================================
-                            FOOD ITEMS
-                        ================================== */}
+                        {/* FOOD ITEMS */}
 
                         {cartItems.map(
                             (item) => (
@@ -839,7 +797,6 @@ const Cart = () => {
                                             flex-1
                                             min-w-0
                                         ">
-
 
                                             <div className="
                                                 flex
@@ -915,8 +872,7 @@ const Cart = () => {
                                                 mt-3
                                             ">
 
-                                                ৳
-                                                {item.price}
+                                                ৳{item.price}
 
                                             </p>
 
@@ -1086,6 +1042,8 @@ const Cart = () => {
                                 </div>
 
 
+                                {/* NAME INPUT */}
+
                                 <input
                                     type="text"
                                     value={customerName}
@@ -1097,38 +1055,73 @@ const Cart = () => {
 
                                         setOrderError("");
 
+                                        if (
+                                            e.target.value.trim()
+                                        ) {
+                                            setNameError("");
+                                        }
+
                                     }}
                                     placeholder="Enter your name"
                                     maxLength={50}
-                                    className="
+                                    className={`
                                         w-full
                                         px-4
                                         py-3.5
                                         rounded-xl
                                         border
-                                        border-[#D8D3C6]
                                         bg-[#FAF9F5]
                                         text-[#252525]
                                         outline-none
-                                        focus:border-[#9A8654]
-                                        focus:ring-2
-                                        focus:ring-[#9A8654]/20
                                         transition
-                                    "
+                                        ${
+                                            nameError
+                                                ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                                                : "border-[#D8D3C6] focus:border-[#9A8654] focus:ring-2 focus:ring-[#9A8654]/20"
+                                        }
+                                    `}
                                 />
 
 
-                                <p className="
-                                    text-xs
-                                    text-[#8C877C]
-                                    mt-2
-                                ">
+                                {/* NAME ERROR */}
 
-                                    Please enter your name
-                                    so the restaurant can
-                                    identify your order.
+                                {nameError ? (
 
-                                </p>
+                                    <p className="
+                                        text-red-500
+                                        text-xs
+                                        md:text-sm
+                                        mt-2
+                                        flex
+                                        items-start
+                                        gap-1
+                                    ">
+
+                                        <span className="font-bold">
+                                            !
+                                        </span>
+
+                                        <span>
+                                            {nameError}
+                                        </span>
+
+                                    </p>
+
+                                ) : (
+
+                                    <p className="
+                                        text-xs
+                                        text-[#8C877C]
+                                        mt-2
+                                    ">
+
+                                        Please enter your name
+                                        so the restaurant can
+                                        identify your order.
+
+                                    </p>
+
+                                )}
 
                             </div>
 
@@ -1172,7 +1165,6 @@ const Cart = () => {
                                     Items
                                 </span>
 
-
                                 <span>
                                     {totalItems}
                                 </span>
@@ -1191,7 +1183,6 @@ const Cart = () => {
                                     Subtotal
                                 </span>
 
-
                                 <span>
                                     ৳{cartTotal}
                                 </span>
@@ -1209,7 +1200,6 @@ const Cart = () => {
                                 <span>
                                     Service Charge
                                 </span>
-
 
                                 <span>
                                     ৳0
@@ -1289,6 +1279,8 @@ const Cart = () => {
                             </button>
 
 
+                            {/* CONTINUE SHOPPING */}
+
                             <Link
                                 to="/menu/vQ5eOlXzEZK0WaruROok"
                                 className="
@@ -1329,6 +1321,5 @@ const Cart = () => {
     );
 
 };
-
 
 export default Cart;
