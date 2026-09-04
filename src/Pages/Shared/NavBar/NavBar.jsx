@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router";
-
+// ami
 import {
   FaShoppingCart,
   FaBars,
